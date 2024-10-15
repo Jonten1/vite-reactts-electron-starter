@@ -5,7 +5,7 @@ const en = {
       clickMe: 'Click me',
       helloElectron: "Hello I'm from React World",
       helloBrowser: 'You are in a Browser, so no Electron functions are available',
-      welcome: '💝 Welcome 💝, now send a message to the Main 📩📩',
+      welcome: 'Welcome to SkyPhone',
       send: 'Send',
       messageSent: 'Message sent!!',
       hiElectron: 'hi from electron'

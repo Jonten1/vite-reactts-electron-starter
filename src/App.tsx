@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AppBar from './AppBar';
+import CallComponent from './CallComponent';
 
 import SwitchDarkMode from './SwitchDarkMode';
 import SelectLanguage from './SelectLanguage';
@@ -49,6 +50,7 @@ function App() {
           <AppBar />
         </div>
       )}
+      <CallComponent />
       <div className="flex-auto">
         <div className="ml-4 mr-4 mt-4 flex items-center justify-between">
           <SwitchDarkMode />

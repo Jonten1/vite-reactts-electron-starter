@@ -27,6 +27,11 @@ function SelectLanguage() {
       key: 'es',
       iconPath: new URL(`./assets/locales/es.svg`, import.meta.url).href
     },
+    {
+      value: 'Svenska',
+      key: 'sv',
+      iconPath: new URL(`./assets/locales/sv.svg`, import.meta.url).href
+    }
   ];
 
   return (
