@@ -157,7 +157,6 @@ function CallComponent() {
       }
 
       console.log('Call ended');
-      setIncomingCallData(null);
     }
   };
 
@@ -178,7 +177,6 @@ function CallComponent() {
       await session.accept(options);
       console.log('Call answered');
       console.log(session);
-      setIncomingCallData(null);
     } else {
       console.log('No incoming call to answer');
     }
