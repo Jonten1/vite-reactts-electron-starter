@@ -6,6 +6,7 @@ import cors from 'cors';
 
 const app = express();
 const PORT = 8080;
+let incomingCallData = null;
 
 // Your 46elks credentials
 const elksUsername = 'u0350c47b9ce438d299ddfc1762488036';
@@ -27,8 +28,13 @@ app.get('/', (req, res) => {
 app.post('/receive-call', (req, res) => {
   res.status(200);
   console.log(req.body);
+  incomingCallData = req.body;
   res.json({ connect: webrtcNumber });
   res.end();
+});
+
+app.get('/incoming-call', (req, res) => {
+  res.json(incomingCallData || {});
 });
 app.post('/make-call', async (req, res) => {
   const { phoneNumber } = req.body;
