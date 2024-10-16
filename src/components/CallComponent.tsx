@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MdPhoneDisabled, MdPhoneEnabled } from 'react-icons/md';
 import { UserAgent, Inviter, Registerer, SessionState, URI } from 'sip.js';
-import ringtoneFile from './assets/ringtone-126505.mp3';
+import ringtoneFile from '../assets/ringtone-126505.mp3';
 
 function CallComponent() {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -10,28 +10,45 @@ function CallComponent() {
   const [incomingCallData, setIncomingCallData] = useState(null);
   const [callActive, setCallActive] = useState(false);
   const [userAgent, setUserAgent] = useState(null);
+  const [callStartTime, setCallStartTime] = useState(null);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [currentNumber, setCurrentNumber] = useState(''); // Current number state
   const ringtoneRef = useRef(null);
   const remoteAudioRef = useRef(null);
 
   const webrtcUser = '4600120052';
   const webrtcPassword = '52AAAA26D4459170E37DA65EA0E9D779';
   const webrtcDomain = 'voip.46elks.com';
+
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
         const response = await fetch('http://localhost:8080/incoming-call');
         const data = await response.json();
-        if (data && Object.keys(data).length > 0) {
-          setIncomingCallData(data);
-        }
-        console.log(incomingCallData);
+        setIncomingCallData(data);
+        console.log('Incoming call data:', incomingCallData);
+        console.log('Incoming call state:', incomingCall, 'call active state:', callActive, 'session', session);
       } catch (error) {
         console.error('Error fetching incoming call data:', error);
       }
-    }, 2000); // Poll every 5 seconds
-
+    }, 2000); // Poll every 2 seconds
     return () => clearInterval(interval);
-  }, []);
+  }, [incomingCall, callActive, session]);
+
+  useEffect(() => {
+    let timer;
+    if (callStartTime) {
+      timer = setInterval(() => {
+        setElapsedTime(Math.floor((Date.now() - callStartTime) / 1000));
+      }, 1000);
+    } else {
+      setElapsedTime(0);
+    }
+    return () => {
+      clearInterval(timer);
+    };
+  }, [callStartTime]);
+
   useEffect(() => {
     const initializeUserAgent = async () => {
       const uri = new URI('sip', webrtcUser, webrtcDomain);
@@ -70,13 +87,19 @@ function CallComponent() {
             if (newState === SessionState.Established) {
               console.log('Call answered');
               setCallActive(true);
+              setCallStartTime(Date.now());
               setupRemoteAudio(invitation);
-            } else if (newState === SessionState.Terminated) {
+              console.log('Call established', newState);
+            } else if (newState === SessionState.Terminating || newState === SessionState.Terminated) {
               setIncomingCall(false);
               setCallActive(false);
+              setCallStartTime(null);
+              setElapsedTime(0);
               setSession(null);
-              ringtoneRef.current.pause();
-              ringtoneRef.current.currentTime = 0;
+              if (ringtoneRef.current) {
+                ringtoneRef.current.pause();
+                ringtoneRef.current.currentTime = 0;
+              }
             }
           });
         }
@@ -90,7 +113,7 @@ function CallComponent() {
         userAgent.stop();
       }
     };
-  }, [session]);
+  }, []);
 
   const setupRemoteAudio = (session) => {
     const remoteStream = new MediaStream();
@@ -134,7 +157,7 @@ function CallComponent() {
         } else if (newState === SessionState.Terminated) {
           setCallActive(false);
           setSession(null);
-          console.log(session);
+          console.log('Call terminated');
         }
       });
 
@@ -145,22 +168,33 @@ function CallComponent() {
   };
 
   const endCall = async () => {
-    if (session) {
+    if (!session) return;
+
+    console.log('Ending call, session state:', session.state);
+    try {
       if (ringtoneRef.current) {
         ringtoneRef.current.pause();
         ringtoneRef.current.currentTime = 0;
       }
-      if (incomingCall) {
-        await session.reject();
-      } else {
+
+      if (session.state === SessionState.Established) {
         await session.bye();
+      } else if (session.state === SessionState.Initial || session.state === SessionState.Establishing) {
+        await session.reject();
       }
 
+      setIncomingCall(false);
+      setCallActive(false);
+      setSession(null);
+      setCurrentNumber(''); // Reset current number
       console.log('Call ended');
+    } catch (error) {
+      console.error('Error ending call:', error);
     }
   };
 
   const answerCall = async () => {
+    setCurrentNumber(incomingCallData.from);
     if (session) {
       if (ringtoneRef.current) {
         ringtoneRef.current.pause();
@@ -176,10 +210,27 @@ function CallComponent() {
       };
       await session.accept(options);
       console.log('Call answered');
-      console.log(session);
+      setIncomingCall(false);
+      // Notify backend to remove the incoming call instance
+      try {
+        await fetch('http://localhost:8080/call-answered', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+      } catch (error) {
+        console.error('Error notifying backend about answered call:', error);
+      }
     } else {
       console.log('No incoming call to answer');
     }
+  };
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
   };
 
   return (
@@ -188,46 +239,43 @@ function CallComponent() {
         <div className="w-full sm:w-1/2 l:w-1/3 flex justify-center items-center">
           <div className="mt-4">
             <h3>Incoming call from:</h3>
-            <p>{incomingCallData.from}</p>
+            <p>{incomingCallData?.from}</p>
           </div>
         </div>
       )}
-      <input
-        className="border border-gray-300 rounded-md py-2 px-4 w-50 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-        type="number"
-        value={phoneNumber}
-        onChange={(e) => setPhoneNumber(e.target.value)}
-        placeholder="+46........"
-      />
+      {callActive && (
+        <div>
+          <h3 className="text-xl">{currentNumber}</h3>
+          <p className="text-xl">Call duration: {formatTime(elapsedTime)}</p>
+        </div>
+      )}
+      {!incomingCall && !callActive && (
+        <input
+          className="border border-gray-300 rounded-md py-2 px-4 w-50 text-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+          type="number"
+          value={phoneNumber}
+          onChange={(e) => setPhoneNumber(e.target.value)}
+          placeholder="+46........"
+        />
+      )}
       <div className="w-full sm:w-1/2 l:w-1/3 flex justify-evenly items-center">
-        {(!incomingCall || !callActive) && (
-          <button
-            className="flex items-center justify-between bg-green-400 rounded px-1 py-0 focus:outline-none hover:bg-green-300 dark:text-white"
+        {!incomingCall && !callActive && (
+          <MdPhoneEnabled
+            className="flex items-center justify-between bg-green-400 rounded-full size-16 px-2 py-2 focus:outline-none hover:bg-green-300 dark:text-white"
             onClick={makeCall}
-            disabled={incomingCall || callActive}
-          >
-            Call
-            <MdPhoneEnabled className="ml-1" />
-          </button>
+          />
         )}
         {(callActive || incomingCall) && (
-          <button
-            className="flex items-center justify-between bg-red-400 rounded px-1 py-0 focus:outline-none hover:bg-red-300 dark:text-white"
+          <MdPhoneDisabled
             onClick={endCall}
-          >
-            Hang up
-            <MdPhoneDisabled className="ml-1" />
-          </button>
+            className="flex items-center justify-between bg-red-400 rounded-full size-16 px-2 py-2 focus:outline-none hover:bg-red-300 dark:text-white"
+          />
         )}
-
-        {incomingCall && (
-          <button
-            className="flex items-center justify-between bg-green-400 rounded px-1 py-0 focus:outline-none hover:bg-green-300 dark:text-white"
+        {incomingCall && !callActive && (
+          <MdPhoneEnabled
             onClick={answerCall}
-          >
-            Pick up
-            <MdPhoneEnabled className="ml-1" />
-          </button>
+            className="flex items-center justify-between bg-green-400 rounded-full size-16 px-2 py-2 focus:outline-none hover:bg-green-300 dark:text-white"
+          />
         )}
       </div>
       <audio ref={ringtoneRef} src={ringtoneFile} loop />

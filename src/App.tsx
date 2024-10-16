@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AppBar from './AppBar';
-import CallComponent from './CallComponent';
+import CallComponent from './components/CallComponent';
+import CallLogsComponent from './components/CallLogs';
 
 import SwitchDarkMode from './SwitchDarkMode';
 import SelectLanguage from './SelectLanguage';
@@ -56,6 +57,7 @@ function App() {
           <SelectLanguage />
         </div>
         <CallComponent />
+        <CallLogsComponent />
       </div>
     </div>
   );
