@@ -1,5 +1,5 @@
-import { log } from 'console';
 import React, { useEffect, useState } from 'react';
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
 export default function CallLogsComponent() {
   const [callLogs, setCallLogs] = useState([]);
@@ -44,17 +44,30 @@ export default function CallLogsComponent() {
       {callLogs.length === 0 ? ( // Handle empty call logs
         <p>No call logs found.</p>
       ) : (
-        <ul className="overflow-auto h-64 w-fit">
-          {callLogs.map((call) => (
-            <li key={call.id}>
-              <p>From: {call.from}</p>
-              <p>To: {call.to}</p>
-              <p>Status: {call.status}</p>
-              <p>Duration: {call.duration} seconds</p>
-              <p>Created: {new Date(call.created * 1000).toLocaleString()}</p>
-            </li>
-          ))}
-        </ul>
+        <table className="overflow-auto h-64 w-fit">
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Created</th>
+              <th>Duration</th>
+              <th>From</th>
+              <th></th>
+              <th>To</th>
+            </tr>
+          </thead>
+          <tbody>
+            {callLogs.map((call) => (
+              <tr key={call.id}>
+                <td>{call.state}</td>
+                <td>{call.start ? call.start : 'N/A'}</td>
+                <td>{call.duration ? call.duration : 'N/A'}</td>
+                <td>{call.from}</td>
+                <td>{call.direction === 'incoming' ? <FaArrowLeft /> : <FaArrowRight />}</td>
+                <td>{call.to}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
     </div>
   );

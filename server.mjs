@@ -1,17 +1,18 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import fetch from 'node-fetch';
 import cors from 'cors';
 import axios from 'axios';
+import dotenv from 'dotenv';
 
+dotenv.config();
 const app = express();
 const PORT = 8080;
 
 // Your 46elks credentials
-const elksUsername = 'u0350c47b9ce438d299ddfc1762488036';
-const elksPassword = '71D873DF52A30ADE550D807C607AA47C';
-const elksNumber = '+46766861565';
-const webrtcNumber = '+4600120052';
+const elksUsername = process.env.REACT_APP_ELKS_USERNAME;
+const elksPassword = process.env.REACT_APP_ELKS_PASSWORD;
+const elksNumber = process.env.ELKS_NUMBER;
+const webrtcNumber = process.env.WEB_NUMBER;
 
 let incomingCall = null; // Store incoming call
 
@@ -31,32 +32,40 @@ app.post('/receive-call', (req, res) => {
 app.post('/make-call', async (req, res) => {
   const { phoneNumber } = req.body;
 
-  const voiceStart = {
-    callerid: elksNumber
-  };
-
-  const data = new URLSearchParams({
-    from: elksNumber,
-    to: phoneNumber,
-    voice_start: JSON.stringify(voiceStart)
-  });
-
   try {
-    const response = await fetch('https://api.46elks.com/a1/calls', {
-      method: 'POST',
-      headers: {
-        Authorization: `Basic ${Buffer.from(`${elksUsername}:${elksPassword}`).toString('base64')}`,
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: data
-    });
+    // API credentials
+    const authKey = Buffer.from(`${elksUsername}:${elksPassword}`).toString('base64');
 
-    const responseData = await response.json();
-    res.json(responseData);
-  } catch (error) {
-    console.error('Error making call:', error);
+    // Set the call endpoint
+    const url = 'https://api.46elks.com/a1/calls';
+
+    // Request data object
+    const data = new URLSearchParams({
+      voice_start: JSON.stringify({ connect: phoneNumber }),
+      to: webrtcNumber,
+      from: elksNumber
+    }).toString();
+
+    // Set the headers
+    const config = {
+      headers: {
+        Authorization: `Basic ${authKey}`,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    };
+
+    // Send request
+    const response = await axios.post(url, data, config);
+
+    // Log and respond with the response data
+    console.log(response.data);
+    res.json(response.data);
+  } catch (err) {
+    console.error('Error making call:', err);
     res.status(500).json({ error: 'Failed to make call' });
   }
+
+  console.log(req.body);
 });
 
 app.get('/incoming-call', (req, res) => {

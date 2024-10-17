@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MdPhoneDisabled, MdPhoneEnabled } from 'react-icons/md';
 import { UserAgent, Inviter, Registerer, SessionState, URI } from 'sip.js';
+import axios from 'axios';
 import ringtoneFile from '../assets/ringtone-126505.mp3';
 
 function CallComponent() {
@@ -13,6 +14,7 @@ function CallComponent() {
   const [callStartTime, setCallStartTime] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [currentNumber, setCurrentNumber] = useState(''); // Current number state
+  const [direction, setDirection] = useState(''); // Direction
   const ringtoneRef = useRef(null);
   const remoteAudioRef = useRef(null);
 
@@ -127,41 +129,28 @@ function CallComponent() {
   };
 
   const makeCall = async () => {
-    if (!userAgent) return;
-    setIncomingCallData(null);
     try {
-      const target = UserAgent.makeURI(`sip:${phoneNumber}@${webrtcDomain}`);
-      if (!target) {
-        throw new Error('Failed to create target URI');
-      }
-
-      const inviter = new Inviter(userAgent, target);
-      const options = {
-        sessionDescriptionHandlerOptions: {
-          constraints: {
-            audio: true,
-            video: false
-          }
-        }
-      };
-      await inviter.invite(options);
-
-      setSession(inviter);
+      const response = await axios.post('http://localhost:8080/make-call', {
+        phoneNumber
+      });
+      console.log('Response data:', response.data);
+      setDirection(response.data.direction);
+      // Assuming you're using SIP.js to manage the session
       setCallActive(true);
 
-      inviter.stateChange.addListener((newState) => {
-        if (newState === SessionState.Established) {
-          setupRemoteAudio(inviter);
-        } else if (newState === SessionState.Terminated) {
-          setCallActive(false);
-          setSession(null);
-          console.log('Call terminated');
-        }
-      });
-
-      console.log('Call initiated');
+      if (response.data.direction === 'outgoing') {
+        const invitation = await session.answer();
+        console.log('Call answered');
+        setupRemoteAudio(invitation);
+      }
     } catch (error) {
-      console.error('Error initiating call:', error);
+      console.error('Error making call:', error);
+      if (error.response) {
+        setCallActive(false);
+
+        // Log additional information if available
+        console.error('Server responded with:', error.response.data);
+      }
     }
   };
 
@@ -169,6 +158,7 @@ function CallComponent() {
     if (!session) return;
 
     console.log('Ending call, session state:', session.state);
+    setDirection('');
     try {
       if (ringtoneRef.current) {
         ringtoneRef.current.pause();
@@ -230,10 +220,14 @@ function CallComponent() {
     const secs = seconds % 60;
     return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
   };
-
+  useEffect(() => {
+    if (direction === 'outgoing') {
+      answerCall();
+    }
+  }, [session]);
   return (
     <div className="flex flex-col justify-center items-center h-full pt-32 space-y-4">
-      {incomingCall && (
+      {incomingCall && direction !== 'outgoing' && (
         <div className="w-full sm:w-1/2 l:w-1/3 flex justify-center items-center">
           <div className="mt-4">
             <h3>Incoming call from:</h3>
@@ -250,7 +244,7 @@ function CallComponent() {
       {!incomingCall && !callActive && (
         <input
           className="border border-gray-300 rounded-md py-2 px-4 w-50 text-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-          type="number"
+          type="text"
           value={phoneNumber}
           onChange={(e) => setPhoneNumber(e.target.value)}
           placeholder="+46........"
@@ -270,10 +264,13 @@ function CallComponent() {
           />
         )}
         {incomingCall && !callActive && (
-          <MdPhoneEnabled
-            onClick={answerCall}
-            className="flex items-center justify-between bg-green-400 rounded-full size-16 px-2 py-2 focus:outline-none hover:bg-green-300 dark:text-white"
-          />
+          <>
+            <p>answer</p>
+            <MdPhoneEnabled
+              onClick={answerCall}
+              className="flex items-center justify-between bg-green-400 rounded-full size-16 px-2 py-2 focus:outline-none hover:bg-green-300 dark:text-white"
+            />
+          </>
         )}
       </div>
       <audio ref={ringtoneRef} src={ringtoneFile} loop />
