@@ -1,6 +1,7 @@
+import { log } from 'console';
 import React, { useEffect, useState } from 'react';
 
-const CallLogsComponent = () => {
+export default function CallLogsComponent() {
   const [callLogs, setCallLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null); // State for error handling
@@ -8,17 +9,19 @@ const CallLogsComponent = () => {
   useEffect(() => {
     const fetchCallLogs = async () => {
       try {
-        const response = await fetch('/call-logs'); // Adjust the URL as needed
+        const response = await fetch('http://localhost:8080/call-logs'); // Adjust the URL as needed
+
         if (!response.ok) {
           throw new Error('Failed to fetch call logs');
         }
 
         const data = await response.json();
-        setCallLogs(data);
+        setCallLogs(data.data);
         console.log('Call logs fetched:', data);
       } catch (error) {
         console.error('Error fetching call logs:', error);
         setError(error.message); // Set error message
+        console.log(data);
       } finally {
         setLoading(false);
       }
@@ -41,7 +44,7 @@ const CallLogsComponent = () => {
       {callLogs.length === 0 ? ( // Handle empty call logs
         <p>No call logs found.</p>
       ) : (
-        <ul>
+        <ul className="overflow-auto h-64 w-fit">
           {callLogs.map((call) => (
             <li key={call.id}>
               <p>From: {call.from}</p>
@@ -55,6 +58,4 @@ const CallLogsComponent = () => {
       )}
     </div>
   );
-};
-
-export default CallLogsComponent;
+}

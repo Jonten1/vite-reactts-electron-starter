@@ -26,8 +26,6 @@ function CallComponent() {
         const response = await fetch('http://localhost:8080/incoming-call');
         const data = await response.json();
         setIncomingCallData(data);
-        console.log('Incoming call data:', incomingCallData);
-        console.log('Incoming call state:', incomingCall, 'call active state:', callActive, 'session', session);
       } catch (error) {
         console.error('Error fetching incoming call data:', error);
       }

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AppBar from './AppBar';
-import CallComponent from './components/CallComponent';
-import CallLogsComponent from './components/CallLogs';
+import CallComponent from './pages/CallComponent';
+import CallLogsComponent from './pages/CallLogs';
 
 import SwitchDarkMode from './SwitchDarkMode';
 import SelectLanguage from './SelectLanguage';

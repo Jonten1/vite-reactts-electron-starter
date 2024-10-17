@@ -1,7 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import fetch from 'node-fetch';
-import path from 'path';
 import cors from 'cors';
 import axios from 'axios';
 
@@ -15,11 +14,6 @@ const elksNumber = '+46766861565';
 const webrtcNumber = '+4600120052';
 
 let incomingCall = null; // Store incoming call
-
-// Log incoming call every 2 seconds
-setInterval(() => {
-  console.log('Incoming call data:', incomingCall);
-}, 2000);
 
 // Middleware
 app.use(cors());
