@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MdPhoneDisabled, MdPhoneEnabled } from 'react-icons/md';
 import { UserAgent, Inviter, Registerer, SessionState, URI } from 'sip.js';
-import dotenv from 'dotenv';
 import axios from 'axios';
 import ringtoneFile from '../assets/ringtone-126505.mp3';
 // TODO fic logs so it doesn't show the connections from internal numbers
-dotenv.config();
 function CallComponent() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [session, setSession] = useState(null);

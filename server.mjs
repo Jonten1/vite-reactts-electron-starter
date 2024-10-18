@@ -101,3 +101,17 @@ app.get('/call-logs', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+app.get('/numbers', async (req, res) => {
+  try {
+    const response = await axios.get('https://api.46elks.com/a1/numbers', {
+      headers: {
+        Authorization: `Basic ${Buffer.from(`${elksUsername}:${elksPassword}`).toString('base64')}`
+      }
+    });
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error fetching call logs:', error);
+    res.status(500).json({ message: 'Error fetching numbers' });
+  }
+});

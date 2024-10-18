@@ -2152,17 +2152,12 @@ electron-publish@24.13.1:
     lazy-val "^1.0.5"
     mime "^2.5.2"
 
-electron-router-dom@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/electron-router-dom/-/electron-router-dom-2.0.0.tgz"
-  integrity sha512-E9Noo7DdwjRFPmIDUZliWmOM50Q6/nmlImvPogL/upVcK42emwv1nExr5EykzC0Q+/Vqi+UurVH5VgGjgZ62EA==
-
 electron-to-chromium@^1.5.28:
   version "1.5.36"
   resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.5.36.tgz"
   integrity sha512-HYTX8tKge/VNp6FGO+f/uVDmUkq+cEfcxYhKf15Akc4M5yxt5YmorwlAitKWjWhWQnKcDRBAQKXkhqqXMqcrjw==
 
-electron@^30.0.7, electron@>=17.0:
+electron@^30.0.7:
   version "30.1.1"
   resolved "https://registry.npmjs.org/electron/-/electron-30.1.1.tgz"
   integrity sha512-D9blhgVoNx82Nsbms+ufX/Az/yJAulkrHZh0CM7hL79TvG35mqJFMNjh8GlJSRK42rVGNGyH3NfhS0VRaGCPcw==
@@ -4481,7 +4476,7 @@ react-refresh@^0.11.0:
   resolved "https://registry.npmjs.org/react-refresh/-/react-refresh-0.11.0.tgz"
   integrity sha512-F27qZr8uUqwhWZboondsPx8tnC3Ct3SxZA3V5WyEvujRyyNv0VYPhoBg1gZ8/MV5tubQp76Trw8lTv9hzRBa+A==
 
-react-router-dom@^6.27.0, react-router-dom@>=6.22.3:
+react-router-dom@^6.27.0:
   version "6.27.0"
   resolved "https://registry.npmjs.org/react-router-dom/-/react-router-dom-6.27.0.tgz"
   integrity sha512-+bvtFWMC0DgAFrfKXKG9Fc+BcXWRUO1aJIihbB79xaeq0v5UzfvnM5houGUm1Y461WVRcgAQ+Clh5rdb1eCx4g==
@@ -4496,7 +4491,7 @@ react-router@6.27.0:
   dependencies:
     "@remix-run/router" "1.20.0"
 
-react@*, react@^17.0.2, "react@>= 16.8.0", react@>=16.8, "react@>=16.8 || ^17.0.0 || ^18.0.0", react@>=16.8.0, react@>=18.0, react@17.0.2:
+react@*, react@^17.0.2, "react@>= 16.8.0", react@>=16.8, "react@>=16.8 || ^17.0.0 || ^18.0.0", react@>=16.8.0, react@17.0.2:
   version "17.0.2"
   resolved "https://registry.npmjs.org/react/-/react-17.0.2.tgz"
   integrity sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA==
