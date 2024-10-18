@@ -3,7 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import { FaArrowLeft, FaArrowRight, FaSync } from 'react-icons/fa';
 import '../style/callLogs.css';
-
+// TODO dont have alert when copying number
+// Find position for refresh button
+// Pagination for logs
 interface CallLog {
   id: string;
   state: string;
