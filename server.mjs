@@ -30,6 +30,8 @@ app.post('/receive-call', (req, res) => {
 });
 
 app.post('/make-call', async (req, res) => {
+  console.log(req.body);
+
   const { phoneNumber } = req.body;
 
   try {
