@@ -1,5 +1,8 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useEffect, useState } from 'react';
 import { FaArrowLeft, FaArrowRight, FaSync } from 'react-icons/fa';
+import '../style/callLogs.css';
 
 interface CallLog {
   id: string;
@@ -13,6 +16,7 @@ interface CallLog {
     to: string;
   }>;
 }
+
 interface NumberData {
   id: string;
   number: string;
@@ -99,7 +103,7 @@ export default function CallLogsComponent() {
     return <div>Error: {error}</div>; // Display error message
   }
 
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string) => {
     const date = new Date(dateString);
 
     const year = date.getFullYear();
@@ -112,7 +116,7 @@ export default function CallLogsComponent() {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   };
 
-  const formatDuration = (seconds) => {
+  const formatDuration = (seconds: number) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const remainingSeconds = seconds % 60;
@@ -124,20 +128,27 @@ export default function CallLogsComponent() {
     return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`;
   };
 
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(
+      () => {
+        alert(`Copied to clipboard: ${text}`);
+      },
+      (err) => {
+        console.error('Failed to copy text: ', err);
+      }
+    );
+  };
+
   return (
     <>
-      <button
-        onClick={fetchCallLogs}
-        className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 flex items-center"
-      >
-        <FaSync className="mr-2" /> Refresh
+      <button onClick={fetchCallLogs} className="refresh-button">
+        <FaSync />
       </button>
       {callLogs.length === 0 ? (
         <p>No call logs found.</p>
       ) : (
-        <table>
-          <caption className="caption-top">Last 100 calls</caption>
-          <div className="m-5 border border-slate-600 rounded bg-gray-500">
+        <div className="table-div">
+          <table>
             <thead>
               <tr>
                 <th>Status</th>
@@ -150,18 +161,20 @@ export default function CallLogsComponent() {
             </thead>
             <tbody>
               {callLogs.map((call) => (
-                <tr className="border border-slate-700" key={call.id}>
+                <tr key={call.id}>
                   <td>{call.state}</td>
                   <td>{call.start ? formatDate(call.start) : 'N/A'}</td>
                   <td>{call.duration !== undefined ? formatDuration(call.duration) : 'N/A'}</td>
                   <td>{cmNumber}</td>
-                  <td>{call.direction === 'incoming' ? <FaArrowLeft /> : <FaArrowRight />}</td>
-                  <td>{getToValue(call)}</td>
+                  <td>{call.direction === 'incoming' ? 'Incoming' : 'Outgoing'}</td>
+                  <td className="cursor-pointer" onClick={() => copyToClipboard(getToValue(call))}>
+                    {getToValue(call)}
+                  </td>
                 </tr>
               ))}
             </tbody>
-          </div>
-        </table>
+          </table>
+        </div>
       )}
     </>
   );

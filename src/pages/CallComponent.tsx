@@ -6,6 +6,7 @@ import ringtoneFile from '../assets/ringtone-126505.mp3';
 // TODO fic logs so it doesn't show the connections from internal numbers
 function CallComponent() {
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [timeout, setTimeout] = useState(0);
   const [session, setSession] = useState(null);
   const [incomingCall, setIncomingCall] = useState(false);
   const [incomingCallData, setIncomingCallData] = useState(null);
@@ -129,9 +130,11 @@ function CallComponent() {
   };
 
   const makeCall = async () => {
+    setTimeout(10);
     try {
       const response = await axios.post('http://localhost:8080/make-call', {
-        phoneNumber
+        phoneNumber,
+        timeout
       });
       console.log('Response data:', response.data);
       setDirection(response.data.direction);
