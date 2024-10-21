@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .sidebar-card {
+    @apply h-full w-full max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5 m-3 dark:bg-slate-800 dark:text-white !important;
+  }
+  .sidebar-list {
+    @apply dark:text-white !important;
+  }
+}

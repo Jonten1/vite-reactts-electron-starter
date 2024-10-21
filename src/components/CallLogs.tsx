@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useEffect, useState } from 'react';
 import { FaArrowLeft, FaArrowRight, FaSync } from 'react-icons/fa';
-import '../style/callLogs.css';
+import '../style/call_logs.css';
 // TODO dont have alert when copying number
 // Find position for refresh button
 // Pagination for logs

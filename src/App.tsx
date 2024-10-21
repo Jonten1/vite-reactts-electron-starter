@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import AppBar from './AppBar';
-import CallComponent from './pages/CallComponent';
-import CallLogsComponent from './pages/CallLogs';
-
-import SwitchDarkMode from './SwitchDarkMode';
-import SelectLanguage from './SelectLanguage';
+import AppBar from './components/AppBar';
+import CallComponent from './components/CallComponent';
+import CallLogsComponent from './components/CallLogs';
+import Sidebar from './components/NavBar';
 
 function App() {
   console.log(window.ipcRenderer);
@@ -45,21 +43,25 @@ function App() {
   }, [fromMain, isSent]);
 
   return (
-    <div className="flex flex-col">
-      {window.Main && (
-        <div className="flex-none">
-          <AppBar />
+    <>
+      {' '}
+      <div className="flex flex-col">
+        {' '}
+        {window.Main && (
+          <div className="flex-none">
+            <AppBar />
+          </div>
+        )}{' '}
+        <div className="flex flex-row h-3/4">
+          {' '}
+          <Sidebar />
+          <div>
+            <CallComponent />
+            <CallLogsComponent />
+          </div>
         </div>
-      )}
-      <div className="flex-auto">
-        <div className="ml-4 mr-4 mt-4 flex items-center justify-between">
-          <SwitchDarkMode />
-          <SelectLanguage />
-        </div>
-        <CallComponent />
-        <CallLogsComponent />
       </div>
-    </div>
+    </>
   );
 }
 

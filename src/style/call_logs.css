@@ -7,7 +7,7 @@
     @apply px-4 py-2 text-white rounded hover:bg-gray-600 flex items-center;
   }
   .table-div {
-    @apply relative overflow-y-auto shadow-md rounded m-10 h-96;
+    @apply relative overflow-y-auto shadow-md rounded m-10 h-80;
   }
   .table-div > table {
     @apply w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400;

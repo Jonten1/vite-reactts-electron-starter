@@ -2,7 +2,7 @@ import { Select, Option } from '@material-tailwind/react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import './style/select_language.css';
+import '../style/select_language.css';
 
 function SelectLanguage() {
   const [language, setLanguage] = React.useState('en');
@@ -20,17 +20,17 @@ function SelectLanguage() {
     {
       value: 'English',
       key: 'en',
-      iconPath: new URL(`./assets/locales/en.svg`, import.meta.url).href
+      iconPath: new URL(`../assets/locales/en.svg`, import.meta.url).href
     },
     {
       value: 'Español',
       key: 'es',
-      iconPath: new URL(`./assets/locales/es.svg`, import.meta.url).href
+      iconPath: new URL(`../assets/locales/es.svg`, import.meta.url).href
     },
     {
       value: 'Svenska',
       key: 'sv',
-      iconPath: new URL(`./assets/locales/sv.svg`, import.meta.url).href
+      iconPath: new URL(`../assets/locales/sv.svg`, import.meta.url).href
     }
   ];
 

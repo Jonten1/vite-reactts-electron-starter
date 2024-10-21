@@ -229,7 +229,7 @@ function CallComponent() {
     }
   }, [session]);
   return (
-    <div className="flex flex-col justify-center items-center h-full pt-32 space-y-4">
+    <div className="flex flex-col justify-center items-center space-y-4">
       {incomingCall && direction !== 'outgoing' && (
         <div className="w-full sm:w-1/2 l:w-1/3 flex justify-center items-center">
           <div className="mt-4">
