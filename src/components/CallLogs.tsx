@@ -1,11 +1,10 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useEffect, useState } from 'react';
+import { Card } from '@material-tailwind/react';
 import { FaArrowLeft, FaArrowRight, FaSync } from 'react-icons/fa';
 import '../style/call_logs.css';
-// TODO dont have alert when copying number
-// Find position for refresh button
-// Pagination for logs
+
 interface CallLog {
   id: string;
   state: string;
@@ -143,13 +142,13 @@ export default function CallLogsComponent() {
 
   return (
     <>
-      <button onClick={fetchCallLogs} className="refresh-button">
-        <FaSync />
-      </button>
       {callLogs.length === 0 ? (
         <p>No call logs found.</p>
       ) : (
-        <div className="table-div">
+        <Card className="table-div">
+          <button onClick={fetchCallLogs} className="refresh-button">
+            <FaSync />
+          </button>
           <table>
             <thead>
               <tr>
@@ -176,7 +175,7 @@ export default function CallLogsComponent() {
               ))}
             </tbody>
           </table>
-        </div>
+        </Card>
       )}
     </>
   );

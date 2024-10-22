@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Card, IconButton, Input } from '@material-tailwind/react';
 import { MdPhoneDisabled, MdPhoneEnabled } from 'react-icons/md';
 import { UserAgent, Inviter, Registerer, SessionState, URI } from 'sip.js';
 import axios from 'axios';
 import ringtoneFile from '../assets/ringtone-126505.mp3';
-// TODO fic logs so it doesn't show the connections from internal numbers
-function CallComponent() {
+function Phone() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [timeout, setTimeout] = useState(0);
   const [session, setSession] = useState(null);
@@ -229,7 +229,7 @@ function CallComponent() {
     }
   }, [session]);
   return (
-    <div className="flex flex-col justify-center items-center space-y-4">
+    <Card className="flex flex-col justify-center items-center space-y-4">
       {incomingCall && direction !== 'outgoing' && (
         <div className="w-full sm:w-1/2 l:w-1/3 flex justify-center items-center">
           <div className="mt-4">
@@ -245,7 +245,7 @@ function CallComponent() {
         </div>
       )}
       {!incomingCall && !callActive && (
-        <input
+        <Input
           className="border border-gray-300 rounded-md py-2 px-4 w-50 text-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
           type="text"
           value={phoneNumber}
@@ -255,16 +255,22 @@ function CallComponent() {
       )}
       <div className="w-full sm:w-1/2 l:w-1/3 flex justify-evenly items-center">
         {!incomingCall && !callActive && (
-          <MdPhoneEnabled
-            className="flex items-center justify-between bg-green-400 rounded-full size-16 px-2 py-2 focus:outline-none hover:bg-green-300 dark:text-white"
-            onClick={makeCall}
-          />
+          <>
+            <IconButton
+              onClick={makeCall}
+              className="flex items-center justify-between bg-green-400 rounded-full size-16 px-2 py-2 focus:outline-none hover:bg-green-300 dark:text-white"
+            >
+              <i className="fas fa-phone text-2xl" />
+            </IconButton>
+          </>
         )}
         {(callActive || incomingCall) && (
-          <MdPhoneDisabled
+          <IconButton
             onClick={endCall}
             className="flex items-center justify-between bg-red-400 rounded-full size-16 px-2 py-2 focus:outline-none hover:bg-red-300 dark:text-white"
-          />
+          >
+            <i className="fas fa-phone-slash text-2xl" />
+          </IconButton>
         )}
         {incomingCall && !callActive && (
           <>
@@ -278,8 +284,8 @@ function CallComponent() {
       </div>
       <audio ref={ringtoneRef} src={ringtoneFile} loop />
       <audio ref={remoteAudioRef} autoPlay />
-    </div>
+    </Card>
   );
 }
 
-export default CallComponent;
+export default Phone;

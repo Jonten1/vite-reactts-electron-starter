@@ -4,16 +4,16 @@
 
 @layer components {
   .refresh-button {
-    @apply px-4 py-2 text-white rounded hover:bg-gray-600 flex items-center;
+    @apply absolute top-0 right-0 m-3 text-white  rounded flex items-center;
   }
   .table-div {
-    @apply relative overflow-y-auto shadow-md rounded m-10 h-80;
+    @apply relative overflow-y-auto shadow-md rounded h-[50vh];
   }
   .table-div > table {
-    @apply w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400;
+    @apply  text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400;
   }
   .table-div > table > thead {
-    @apply text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400;
+    @apply  w-auto text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400;
   }
   .table-div > table > thead > tr th {
     @apply px-6 py-3 text-center;
@@ -35,15 +35,13 @@
 /* Style the scrollbar track */
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
-  border-top-right-radius: 0.25rem; /* Rounded corners */
-  border-bottom-right-radius: 0.25rem; /* Rounded corners */
+  border-radius: 0.50rem; /* Rounded corners */
 }
 
 /* Style the scrollbar handle */
 ::-webkit-scrollbar-thumb {
   background: #888;
-  border-top-right-radius: 0.25rem; /* Rounded corners */
-  border-bottom-right-radius: 0.25rem; /* Rounded corners */
+  border-radius: 0.50rem; /* Rounded corners */
 }
 
 /* Style the scrollbar handle on hover */

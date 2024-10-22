@@ -15,7 +15,7 @@ function AppBar() {
   };
 
   return (
-    <div className="bg-slate-800 py-0.5 flex justify-between draggable text-white">
+    <div className="bg-slate-800 py-0.5 flex justify-between draggable text-white fixed top-0 left-0 right-0 z-50">
       <div className="inline-flex">
         <img className="h-6 lg:-ml-2" src={Icon} alt="Icon of Electron" />
         <p className="text-xs md:pt-1 md:-ml-1 lg:-ml-2">Vite App</p>
