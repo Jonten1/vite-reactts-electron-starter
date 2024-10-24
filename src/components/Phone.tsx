@@ -1,10 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Card, CardBody, CardHeader, CardFooter, Typography, IconButton, Input } from '@material-tailwind/react';
-import { MdPhoneDisabled, MdPhoneEnabled } from 'react-icons/md';
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  CardFooter,
+  Typography,
+  IconButton,
+  Button,
+  Input,
+  Menu,
+  MenuItem,
+  MenuHandler,
+  MenuList
+} from '@material-tailwind/react';
 import { UserAgent, Inviter, Registerer, SessionState, URI } from 'sip.js';
 import '../style/phone.css';
 import axios from 'axios';
 import ringtoneFile from '../assets/ringtone-126505.mp3';
+import { C } from 'jssip';
 function Phone() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [timeout, setTimeout] = useState(0);
@@ -17,12 +30,28 @@ function Phone() {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [currentNumber, setCurrentNumber] = useState(''); // Current number state
   const [direction, setDirection] = useState(''); // Direction
+  const [country, setCountry] = useState(0);
   const ringtoneRef = useRef(null);
   const remoteAudioRef = useRef(null);
 
   const webrtcUser = '4600120052';
   const webrtcPassword = '52AAAA26D4459170E37DA65EA0E9D779';
   const webrtcDomain = 'voip.46elks.com';
+  const COUNTRIES = [
+    'France (+33)',
+    'Germany (+49)',
+    'Sweden (+46)',
+    'Denmark (+45)',
+    'Finland (+358)',
+    'Czech Republic (+420)',
+    'Poland (+48)',
+    'Netherlands (+31)',
+    'Italy (+39)',
+    'Norway (+47)',
+    'UK (+44)',
+    'USA (+1)'
+  ];
+  const CODES = ['+33', '+49', '+46', '+45', '+358', '+420', '+48', '+31', '+39', '+47', '+44', '+1'];
 
   useEffect(() => {
     const interval = setInterval(async () => {
@@ -134,7 +163,7 @@ function Phone() {
     setTimeout(10);
     try {
       const response = await axios.post('http://localhost:8080/make-call', {
-        phoneNumber,
+        phoneNumber: CODES[country] + phoneNumber,
         timeout
       });
       console.log('Response data:', response.data);
@@ -231,60 +260,77 @@ function Phone() {
   }, [session]);
   return (
     <Card className="phone">
-      <CardBody className="phone-body">
-        {incomingCall && direction !== 'outgoing' && (
-          <>
-            <h3>Incoming call from:</h3>
-            <p>{incomingCallData?.from}</p>
-          </>
-        )}
-        {callActive && (
-          <>
-            <h3 className="text-xl">{currentNumber}</h3>
-            <p className="text-xl">Call duration: {formatTime(elapsedTime)}</p>
-          </>
-        )}
-        {!incomingCall && !callActive && (
-          <div className="w-48">
+      {incomingCall && direction !== 'outgoing' && (
+        <>
+          <h3>Incoming call from:</h3>
+          <p>{incomingCallData?.from}</p>
+        </>
+      )}
+      {callActive && (
+        <>
+          <h3 className="text-xl">{currentNumber}</h3>
+          <p className="text-xl">Call duration: {formatTime(elapsedTime)}</p>
+        </>
+      )}
+
+      {!incomingCall && !callActive && (
+        <CardBody className="phone-body">
+          <div className="relative flex w-full">
+            <Menu placement="bottom-start">
+              <MenuHandler>
+                <Button ripple={false} variant="text" className="button-country">
+                  {CODES[country]}
+                </Button>
+              </MenuHandler>
+              <MenuList className="max-h-[20rem] max-w-[18rem]">
+                {COUNTRIES.map((country, index) => {
+                  return (
+                    <MenuItem key={country} value={country} onClick={() => setCountry(index)}>
+                      {country}
+                    </MenuItem>
+                  );
+                })}
+              </MenuList>
+            </Menu>
             <Input
-              className="nr-input"
-              size="md"
-              type="text"
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
-              label="Phone number"
+              type="tel"
+              pattern="[0-9]*"
+              inputMode="numeric"
+              maxLength={12}
+              placeholder="Phone number"
+              className="nr-input"
+              labelProps={{
+                className: 'before:content-none after:content-none'
+              }}
+              containerProps={{
+                className: 'min-w-0'
+              }}
             />
           </div>
-        )}
-      </CardBody>
-      <CardFooter>
+        </CardBody>
+      )}
+
+      <CardFooter className="phone-footer">
         {!incomingCall && !callActive && (
           <>
-            <IconButton
-              onClick={makeCall}
-              className="flex items-center justify-between bg-green-400 rounded-full size-16 px-2 py-2 focus:outline-none hover:bg-green-300 dark:text-white"
-            >
+            <IconButton onClick={makeCall} className="call-button">
+              <i className="fas fa-phone text-2xl" />
+            </IconButton>
+          </>
+        )}
+        {incomingCall && !callActive && (
+          <>
+            <IconButton onClick={answerCall} className="call-button">
               <i className="fas fa-phone text-2xl" />
             </IconButton>
           </>
         )}
         {(callActive || incomingCall) && (
-          <IconButton
-            onClick={endCall}
-            className="flex items-center justify-between bg-red-400 rounded-full size-16 px-2 py-2 focus:outline-none hover:bg-red-300 dark:text-white"
-          >
+          <IconButton onClick={endCall} className="hangup-button">
             <i className="fas fa-phone-slash text-2xl" />
           </IconButton>
-        )}
-        {incomingCall && !callActive && (
-          <>
-            <IconButton
-              onClick={answerCall}
-              className="flex items-center justify-between bg-green-400 rounded-full size-16 px-2 py-2 focus:outline-none hover:bg-green-300 dark:text-white"
-            >
-              <i className="fas fa-phone text-2xl" />
-            </IconButton>
-          </>
         )}
       </CardFooter>
 

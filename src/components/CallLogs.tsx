@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useEffect, useState } from 'react';
-import { Card } from '@material-tailwind/react';
+import { Card, Typography } from '@material-tailwind/react';
 import { FaArrowLeft, FaArrowRight, FaSync } from 'react-icons/fa';
 import '../style/call_logs.css';
 
@@ -97,7 +97,62 @@ export default function CallLogsComponent() {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="table-div flex flex-row justify-between overflow-hidden w-full">
+        <div className="animate-pulse">
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+        </div>
+        <div className="animate-pulse">
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+        </div>
+        <div className="animate-pulse">
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+        </div>
+        <div className="animate-pulse">
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+          <div className="w-72 h-8 bg-gray-300 rounded-md mb-4"></div>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
