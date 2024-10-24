@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Card, IconButton, Input } from '@material-tailwind/react';
+import { Card, CardBody, CardHeader, CardFooter, Typography, IconButton, Input } from '@material-tailwind/react';
 import { MdPhoneDisabled, MdPhoneEnabled } from 'react-icons/md';
 import { UserAgent, Inviter, Registerer, SessionState, URI } from 'sip.js';
+import '../style/phone.css';
 import axios from 'axios';
 import ringtoneFile from '../assets/ringtone-126505.mp3';
 function Phone() {
@@ -229,31 +230,34 @@ function Phone() {
     }
   }, [session]);
   return (
-    <Card className="flex flex-col justify-center items-center space-y-4">
-      {incomingCall && direction !== 'outgoing' && (
-        <div className="w-full sm:w-1/2 l:w-1/3 flex justify-center items-center">
-          <div className="mt-4">
+    <Card className="phone">
+      <CardBody className="phone-body">
+        {incomingCall && direction !== 'outgoing' && (
+          <>
             <h3>Incoming call from:</h3>
             <p>{incomingCallData?.from}</p>
+          </>
+        )}
+        {callActive && (
+          <>
+            <h3 className="text-xl">{currentNumber}</h3>
+            <p className="text-xl">Call duration: {formatTime(elapsedTime)}</p>
+          </>
+        )}
+        {!incomingCall && !callActive && (
+          <div className="w-48">
+            <Input
+              className="nr-input"
+              size="md"
+              type="text"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              label="Phone number"
+            />
           </div>
-        </div>
-      )}
-      {callActive && (
-        <div>
-          <h3 className="text-xl">{currentNumber}</h3>
-          <p className="text-xl">Call duration: {formatTime(elapsedTime)}</p>
-        </div>
-      )}
-      {!incomingCall && !callActive && (
-        <Input
-          className="border border-gray-300 rounded-md py-2 px-4 w-50 text-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-          type="text"
-          value={phoneNumber}
-          onChange={(e) => setPhoneNumber(e.target.value)}
-          placeholder="+46........"
-        />
-      )}
-      <div className="w-full sm:w-1/2 l:w-1/3 flex justify-evenly items-center">
+        )}
+      </CardBody>
+      <CardFooter>
         {!incomingCall && !callActive && (
           <>
             <IconButton
@@ -274,14 +278,16 @@ function Phone() {
         )}
         {incomingCall && !callActive && (
           <>
-            <p>answer</p>
-            <MdPhoneEnabled
+            <IconButton
               onClick={answerCall}
               className="flex items-center justify-between bg-green-400 rounded-full size-16 px-2 py-2 focus:outline-none hover:bg-green-300 dark:text-white"
-            />
+            >
+              <i className="fas fa-phone text-2xl" />
+            </IconButton>
           </>
         )}
-      </div>
+      </CardFooter>
+
       <audio ref={ringtoneRef} src={ringtoneFile} loop />
       <audio ref={remoteAudioRef} autoPlay />
     </Card>
