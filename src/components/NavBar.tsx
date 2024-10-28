@@ -34,7 +34,7 @@ function NavList() {
         </a>
       </Typography>
       <SwitchDarkMode />
-      <SelectLanguage />
+      {/* <SelectLanguage /> */}
     </ul>
   );
 }

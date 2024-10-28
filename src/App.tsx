@@ -54,7 +54,7 @@ function App() {
         {' '}
         <Sidebar />
         <Phone />
-        <CallLogsComponent />
+        {/* <CallLogsComponent /> */}
       </div>
     </>
   );
