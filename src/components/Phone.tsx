@@ -106,9 +106,7 @@ function Phone() {
         }
       };
     };
-
     initializeUserAgent();
-
     return () => {
       if (userAgent) {
         userAgent.stop();

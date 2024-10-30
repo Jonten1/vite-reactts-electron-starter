@@ -3,6 +3,7 @@ import { join } from 'path';
 
 // Packages
 import { BrowserWindow, app, ipcMain, IpcMainEvent, nativeTheme } from 'electron';
+
 import isDev from 'electron-is-dev';
 
 const height = 600;
@@ -19,7 +20,8 @@ function createWindow() {
     resizable: true,
     fullscreenable: true,
     webPreferences: {
-      preload: join(__dirname, 'preload.js')
+      preload: join(__dirname, 'preload.js'),
+      contextIsolation: true
     }
   });
 
@@ -77,7 +79,27 @@ app.on('window-all-closed', () => {
 // code. You can also put them in separate files and require them here.
 
 // listen the channel `message` and resend the received message to the renderer process
-ipcMain.on('message', (event: IpcMainEvent, message: any) => {
-  console.log(message);
-  setTimeout(() => event.sender.send('message', 'common.hiElectron'), 500);
+
+ipcMain.on('login', async (event, { email, password }) => {
+  try {
+    const response = await fetch('http://localhost:5000/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await response.json();
+
+    // Send the response back to the renderer process
+    if (response.ok) {
+      event.reply('login-response', data); // Send the token and user data
+    } else {
+      event.reply('login-response', { error: data.error || 'Login failed' });
+    }
+  } catch (error) {
+    console.error('Login error:', error);
+    event.reply('login-response', { error: 'An error occurred while logging in.' });
+  }
 });
