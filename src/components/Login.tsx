@@ -19,6 +19,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
       setLoading(false); // Stop loading
       if (response.token) {
         onLoginSuccess(response.token); // Handle successful login
+        localStorage.setItem('token', response.token);
       } else {
         setError(response.error || 'An error occurred. Please try again.'); // Handle error
       }

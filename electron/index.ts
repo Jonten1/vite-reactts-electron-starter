@@ -89,9 +89,7 @@ ipcMain.on('login', async (event, { email, password }) => {
       },
       body: JSON.stringify({ email, password })
     });
-
     const data = await response.json();
-
     // Send the response back to the renderer process
     if (response.ok) {
       event.reply('login-response', data); // Send the token and user data

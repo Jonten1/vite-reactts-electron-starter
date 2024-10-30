@@ -40,6 +40,7 @@ function App() {
     email,
     setAdminUsers,
     setAdminLogs,
+    adminLogs,
     adminUsers,
     setIsAuthenticated
   };
@@ -56,7 +57,7 @@ function App() {
       ) : (
         <div className="wrapper">
           <NavBar {...navBarProps} />
-          <Phone />
+          {role !== 'admin' && <Phone />}
           {adminUsers && <AdminUsers />}
           {adminLogs && <AdminLogs />}
           {/* <CallLogsComponent /> */}
