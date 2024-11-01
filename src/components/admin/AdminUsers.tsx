@@ -293,10 +293,10 @@ export default function AdminUsers() {
                               key={code}
                               value={name}
                               className="flex items-center gap-2"
-                              onClick={() => setCountry(name)}
+                              onClick={() => setCountry(code)}
                             >
                               <Flag code={code} style={{ width: '20px', height: '15px' }} />
-                              {name}
+                              {code}
                             </MenuItem>
                           ))}
                         </MenuList>

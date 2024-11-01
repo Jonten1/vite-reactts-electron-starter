@@ -9,18 +9,28 @@ export default function NavBar({
   setAdminUsers,
   adminUsers,
   setAdminLogs,
-  adminLogs
+  adminLogs,
+  setCountry,
+  setSettingsToggle
 }) {
   const handleLogout = () => {
     setIsAuthenticated(false);
     localStorage.removeItem('authToken'); // Remove token from local storage
+    setCountry('');
   };
   const toggleAdminUsers = () => {
     setAdminUsers(true);
     setAdminLogs(false);
+    setSettingsToggle(false);
   };
   const toggleAdminLogs = () => {
     setAdminLogs(true);
+    setAdminUsers(false);
+    setSettingsToggle(false);
+  };
+  const toggleSettingsHandler = () => {
+    setSettingsToggle(true);
+    setAdminLogs(false);
     setAdminUsers(false);
   };
   return (
@@ -53,6 +63,7 @@ export default function NavBar({
               </MenuHandler>
               <MenuList>
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                <MenuItem onClick={toggleSettingsHandler}>Settings</MenuItem>
               </MenuList>
             </Menu>
             <Typography as="li" variant="small" color="blue-gray" className="p-1 font-medium">
