@@ -8,7 +8,7 @@ interface LoginProps {
 
 // Define the Login component as a default export function
 export default function Login({ onLoginSuccess }: LoginProps) {
-  const [email, setEmail] = useState('admin@admin');
+  const [email, setEmail] = useState('admin@admin.com');
   const [password, setPassword] = useState('adminnn');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);

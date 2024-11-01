@@ -58,8 +58,8 @@ function App() {
         <div className="wrapper">
           <NavBar {...navBarProps} />
           {role !== 'admin' && <Phone />}
-          {adminUsers && <AdminUsers />}
-          {adminLogs && <AdminLogs />}
+          {role === 'admin' && adminUsers && <AdminUsers />}
+          {role === 'admin' && adminLogs && <AdminLogs />}
           {/* <CallLogsComponent /> */}
         </div>
       )}
