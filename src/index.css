@@ -5,13 +5,13 @@
 
 /* For AppBar */
 .draggable {
-    -webkit-user-select: none;
-    -webkit-app-region: drag;
-  }
+  -webkit-user-select: none;
+  -webkit-app-region: drag;
+}
 
 .undraggable {
-    -webkit-app-region: no-drag;
-  }
+  -webkit-app-region: no-drag;
+}
 
 @layer base {
   code {
@@ -19,6 +19,9 @@
   }
 
   .root {
-    @apply min-h-screen dark:bg-slate-900 dark:text-gray-200;
+    @apply flex justify-center min-h-screen pt-8 dark:bg-slate-900 dark:text-gray-200;
+  }
+  .wrapper {
+    @apply flex flex-col h-[95vh] w-full px-6 py-3;
   }
 }

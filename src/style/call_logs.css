@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .refresh-button {
+    @apply absolute top-0 right-0 m-3 text-white  rounded flex items-center;
+  }
+  .table-div {
+    @apply relative overflow-y-auto shadow-md rounded h-[50vh];
+  }
+  .table-div > table {
+    @apply  text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400;
+  }
+  .table-div > table > thead {
+    @apply  w-auto text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400;
+  }
+  .table-div > table > thead > tr th {
+    @apply px-6 py-3 text-center;
+  }
+  .table-div > table > tbody > tr {
+    @apply odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700;
+  }
+  .table-div > table > tbody > tr > td {
+    @apply px-6 py-4 text-center;
+  }
+}
+
+/* Style the scrollbar track */
+::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+  height: 8px; /* Height of the scrollbar */
+}
+
+/* Style the scrollbar track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 0.50rem; /* Rounded corners */
+}
+
+/* Style the scrollbar handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 0.50rem; /* Rounded corners */
+}
+
+/* Style the scrollbar handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

@@ -1,4 +1,5 @@
-import { ipcRenderer, contextBridge } from 'electron';
+import { ipcRenderer,ipc, contextBridge } from 'electron';
+import { fetch } from 'node-fetch';
 
 /**
  * Using the ipcRenderer directly in the browser through the contextBridge ist not really secure.
@@ -47,7 +48,7 @@ const safeDOM = {
 function useLoading() {
   const styleContent = `
   .sk-chase {
-  
+
   }
 
   .sk-chase-dot {
@@ -65,7 +66,7 @@ function useLoading() {
     height: 25%;
     background-color: #fff;
     border-radius: 100%;
-    animation: sk-chase-dot-before 2.0s infinite ease-in-out both; 
+    animation: sk-chase-dot-before 2.0s infinite ease-in-out both;
   }
 
   .sk-chase-dot:nth-child(1) { animation-delay: -1.1s; }
@@ -80,21 +81,21 @@ function useLoading() {
   .sk-chase-dot:nth-child(4):before { animation-delay: -0.8s; }
   .sk-chase-dot:nth-child(5):before { animation-delay: -0.7s; }
   .sk-chase-dot:nth-child(6):before { animation-delay: -0.6s; }
-  
+
   @keyframes sk-chase {
-    100% { transform: rotate(360deg); } 
+    100% { transform: rotate(360deg); }
   }
-  
+
   @keyframes sk-chase-dot {
-    80%, 100% { transform: rotate(360deg); } 
+    80%, 100% { transform: rotate(360deg); }
   }
 
   @keyframes sk-chase-dot-before {
     50% {
-      transform: scale(0.4); 
+      transform: scale(0.4);
     } 100%, 0% {
-      transform: scale(1.0); 
-    } 
+      transform: scale(1.0);
+    }
   }
 
   .app-loading-wrap {
@@ -156,17 +157,21 @@ declare global {
 
 const api = {
   /**
-   * Here you can expose functions to the renderer process
-   * so they can interact with the main (electron) side
-   * without security problems.
-   *
-   * The function below can accessed using `window.Main.sayHello`
+   * Send a message to the main process
    */
-  sendMessage: (message: string) => {
-    ipcRenderer.send('message', message);
+  sendMessage: (channel: string, data: any) => {
+    ipcRenderer.send(channel, data);
   },
+
   /**
-    Here function for AppBar
+   * Provide an easier way to listen to events
+   */
+  on: (channel: string, callback: (data: any) => void) => {
+    ipcRenderer.on(channel, (_, data) => callback(data));
+  },
+
+  /**
+   * Other API functions can go here
    */
   Minimize: () => {
     ipcRenderer.send('minimize');
@@ -179,12 +184,6 @@ const api = {
   },
   removeLoading: () => {
     removeLoading();
-  },
-  /**
-   * Provide an easier way to listen to events
-   */
-  on: (channel: string, callback: (data: any) => void) => {
-    ipcRenderer.on(channel, (_, data) => callback(data));
   }
 };
 
