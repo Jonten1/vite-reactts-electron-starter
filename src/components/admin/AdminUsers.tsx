@@ -29,8 +29,11 @@ export default function AdminUsers() {
   const [error, setError] = useState('');
   const [userList, setUserList] = useState([]);
   const [countries, setCountries] = useState([]);
-  const [addNewCountry, setAddNewCountry] = useState(false);
+  const [addNewCountry, setAddNewCountry] = useState(true);
   const [editingUser, setEditingUser] = useState(null);
+  const [numbers, setNumbers] = useState([]);
+  const [numberMobile, setNumberMobile] = useState('');
+  const [phoneCountry, setPhoneCountry] = useState('');
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -48,6 +51,24 @@ export default function AdminUsers() {
   };
 
   const token = localStorage.getItem('token');
+  const fetchNumbers = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/numbers');
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch numbers');
+      }
+
+      const data = await response.json();
+
+      // Filter numbers where the country matches the user's country
+
+      setNumbers(data.data);
+      console.log(numbers);
+    } catch (err: any) {
+      console.error(err.message);
+    }
+  };
 
   const fetchUserList = async () => {
     try {
@@ -92,6 +113,9 @@ export default function AdminUsers() {
     setFetchedCountries(data.map((country) => country.countryCode));
     setCountries(countryList.getData().filter((country) => fetchedCountries.includes(country.code)));
   };
+  useEffect(() => {
+    setNumberMobile('');
+  }, [country]);
 
   useEffect(() => {
     fetchCountriesList();
@@ -100,7 +124,6 @@ export default function AdminUsers() {
 
   const handleAddCountry = async () => {
     try {
-      const token = localStorage.getItem('token');
       if (!token) {
         setError('No authentication token found.');
         return;
@@ -139,7 +162,7 @@ export default function AdminUsers() {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ email, password, country, registerRole })
+        body: JSON.stringify({ email, password, country, numberMobile, registerRole })
       });
 
       const data = await response.json();
@@ -156,6 +179,7 @@ export default function AdminUsers() {
   const handleOpen = (value) => {
     setOpen(open === value ? 0 : value);
     fetchCountriesList();
+    fetchNumbers();
   };
 
   const handleEditUser = (user) => {
@@ -204,6 +228,12 @@ export default function AdminUsers() {
     } catch (error) {
       setError('An error occurred while deleting the user.');
     }
+  };
+
+  const handleSetCountry = (code) => {
+    setCountry(code);
+    setPhoneCountry(code);
+    console.log(phoneCountry);
   };
 
   return (
@@ -293,7 +323,7 @@ export default function AdminUsers() {
                               key={code}
                               value={name}
                               className="flex items-center gap-2"
-                              onClick={() => setCountry(code)}
+                              onClick={() => handleSetCountry(code)}
                             >
                               <Flag code={code} style={{ width: '20px', height: '15px' }} />
                               {code}
@@ -302,6 +332,36 @@ export default function AdminUsers() {
                         </MenuList>
                       </Menu>
                     )}
+                    <Typography variant="h6" color="blue-gray" className="-mb-3">
+                      Phone number
+                    </Typography>
+                    <Menu>
+                      <MenuHandler>
+                        <Button
+                          ripple={false}
+                          variant="text"
+                          color="blue-gray"
+                          className="flex h-10 items-center gap-2 border border-blue-gray-200 pl-3"
+                        >
+                          {numberMobile || 'Select number'}
+                        </Button>
+                      </MenuHandler>
+                      <MenuList className="max-h-[20rem] max-w-[18rem] overflow-auto">
+                        {numbers
+                          .filter(({ country }) => country === phoneCountry.toLowerCase())
+                          .filter(({ category }) => category === 'mobile')
+                          .map(({ number }) => (
+                            <MenuItem
+                              key={number}
+                              value={number}
+                              onClick={() => setNumberMobile(number)}
+                              className="flex items-center gap-2"
+                            >
+                              {number}
+                            </MenuItem>
+                          ))}
+                      </MenuList>{' '}
+                    </Menu>
                     <Typography variant="h6" color="blue-gray" className="-mb-3">
                       Role
                     </Typography>

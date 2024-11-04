@@ -17,31 +17,9 @@ function App() {
   const [adminUsers, setAdminUsers] = useState<boolean>(false);
   const [adminLogs, setAdminLogs] = useState<boolean>(false);
   const [settingsToggle, setSettingsToggle] = useState<boolean>(false);
-  const [numbers, setNumbers] = useState([]);
   const [cmNumber, setCmNumber] = useState<string | null>(null);
   const [cmNumberWeb, setCmNumberWeb] = useState<string | null>(null);
-
-  useEffect(() => {
-    window.Main.removeLoading();
-  }, []);
-  const fetchNumbers = async () => {
-    try {
-      const response = await fetch('http://localhost:8080/numbers');
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch numbers');
-      }
-
-      const data = await response.json();
-      setNumbers(data.data);
-      console.log('Numbers', numbers);
-
-      console.log('Mobile Number:', cmNumber);
-      console.log('Web Number:', cmNumberWeb);
-    } catch (err: any) {
-      console.error(err.message);
-    }
-  };
+  const [filteredNumbers, setFilteredNumbers] = useState<string[]>([]);
   const handleLoginSuccess = (token: string) => {
     localStorage.setItem('authToken', token);
     axios.defaults.headers.common.Authorization = `Bearer ${token}`;
@@ -51,18 +29,31 @@ function App() {
         setRole(response.data.user.role);
         setEmail(response.data.user.email);
         setCountry(response.data.user.country);
+        setCmNumber(response.data.user.numberMobile);
         setIsAuthenticated(true);
       })
       .catch(() => {
         setIsAuthenticated(false);
         localStorage.removeItem('authToken');
       });
-    fetchNumbers();
   };
+  useEffect(() => {
+    // check if the user is already logged in
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsAuthenticated(true);
+      handleLoginSuccess(token);
+    }
+  }, []);
+
+  useEffect(() => {
+    window.Main.removeLoading();
+  }, []);
 
   const accountSettingsProps = {
     country,
     email,
+    cmNumber,
     role
   };
   const navBarProps = {
