@@ -1,17 +1,18 @@
-const webpack = require('webpack');
-module.exports = {
-  resolve: {
-    fallback: {
-      events: require.resolve('events/')
-    },
-    extensions: ['.ts', '.tsx', '.js']
+import { ProvidePlugin } from 'webpack';
+import rules from './rules.webpack';
+
+export const resolve = {
+  fallback: {
+    events: require.resolve('events/')
   },
-  module: {
-    rules: require('./rules.webpack')
-  },
-  plugins: [
-    new webpack.ProvidePlugin({
-      process: 'process/browser'
-    })
-  ]
+  extensions: ['.ts', '.tsx', '.js']
 };
+
+export const module = {
+  rules
+};
+export const plugins = [
+  new ProvidePlugin({
+    process: 'process/browser'
+  })
+];

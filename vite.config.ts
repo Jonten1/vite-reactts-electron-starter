@@ -4,13 +4,15 @@ import { rmSync } from 'node:fs';
 import { join } from 'path';
 import electron from 'vite-plugin-electron';
 import renderer from 'vite-plugin-electron-renderer';
-import nodePolyfills from './NodePolyfillPlugin';
 import pkg from './package.json';
 
 const root = join(__dirname);
 const srcRoot = join(__dirname, 'src');
+
+// Clean dist folder
 rmSync('dist-electron', { recursive: true, force: true });
 
+// Build configuration for electron
 const buildElectron = (isDev: boolean) => ({
   sourcemap: isDev,
   minify: !isDev,
@@ -20,7 +22,8 @@ const buildElectron = (isDev: boolean) => ({
   }
 });
 
-function plugins(isDev: boolean) {
+// Plugin configuration
+function getPlugins(isDev: boolean) {
   return [
     react(),
     electron([
@@ -37,8 +40,6 @@ function plugins(isDev: boolean) {
       {
         entry: join(root, 'electron/preload.ts'),
         onstart(options) {
-          // Notify the Renderer-Process to reload the page when the Preload-Scripts build is complete,
-          // instead of restarting the entire Electron App.
           options.reload();
         },
         vite: {
@@ -46,56 +47,59 @@ function plugins(isDev: boolean) {
         }
       }
     ]),
-    renderer(),
-    nodePolyfills()
+    renderer({
+      nodeIntegration: true
+    })
   ];
 }
 
-export default ({ command }: ConfigEnv): UserConfig => {
-  // DEV
-  if (command === 'serve') {
-    return {
-      root: srcRoot,
-      base: '/',
-      plugins: plugins(true),
-      resolve: {
-        alias: {
-          '/@': srcRoot
-        }
-      },
-      build: {
-        outDir: join(root, '/dist-vite'),
-        emptyOutDir: true,
-        rollupOptions: {}
-      },
-      server: {
-        port: process.env.PORT === undefined ? 3000 : +process.env.PORT
-      },
-      optimizeDeps: {
-        exclude: ['path']
-      }
-    };
+// Shared config between dev and prod
+const sharedConfig = {
+  resolve: {
+    alias: {
+      '/@': srcRoot,
+      // Add node built-in polyfills
+      path: 'path-browserify',
+      stream: 'stream-browserify',
+      crypto: 'crypto-browserify',
+      buffer: 'buffer'
+    }
+  },
+  optimizeDeps: {
+    exclude: ['path'],
+    include: ['buffer', 'process']
+  },
+  define: {
+    'process.env': process.env,
+    global: 'globalThis'
   }
-  // PROD
-  return {
+};
+
+export default ({ command }: ConfigEnv): UserConfig => {
+  const isDev = command === 'serve';
+
+  const config: UserConfig = {
     root: srcRoot,
-    base: './',
-    plugins: plugins(false),
-    resolve: {
-      alias: {
-        '/@': srcRoot
-      }
-    },
+    base: isDev ? '/' : './',
+    plugins: getPlugins(isDev),
+    ...sharedConfig,
     build: {
       outDir: join(root, '/dist-vite'),
       emptyOutDir: true,
-      rollupOptions: {}
+      commonjsOptions: {
+        transformMixedEsModules: true
+      },
+      // Add these to handle node builtins
+      rollupOptions: {
+        output: {
+          format: 'commonjs'
+        }
+      }
     },
     server: {
       port: process.env.PORT === undefined ? 3000 : +process.env.PORT
-    },
-    optimizeDeps: {
-      exclude: ['path']
     }
   };
+
+  return config;
 };

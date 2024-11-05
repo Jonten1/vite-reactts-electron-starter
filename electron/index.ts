@@ -2,7 +2,7 @@
 import { join } from 'path';
 
 // Packages
-import { BrowserWindow, app, ipcMain, IpcMainEvent, nativeTheme } from 'electron';
+import { BrowserWindow, app, ipcMain, nativeTheme } from 'electron';
 
 import isDev from 'electron-is-dev';
 
@@ -20,8 +20,9 @@ function createWindow() {
     resizable: true,
     fullscreenable: true,
     webPreferences: {
+      nodeIntegration: true,
       preload: join(__dirname, 'preload.js'),
-      contextIsolation: true
+      contextIsolation: true,
     }
   });
 

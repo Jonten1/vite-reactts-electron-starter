@@ -1,5 +1,4 @@
-import { ipcRenderer,ipc, contextBridge } from 'electron';
-import { fetch } from 'node-fetch';
+import { ipcRenderer, contextBridge } from 'electron';
 
 /**
  * Using the ipcRenderer directly in the browser through the contextBridge ist not really secure.

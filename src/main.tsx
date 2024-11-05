@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import './polyfills';
 import './index.css';
 import './plugins/i18n';
 import App from './App';

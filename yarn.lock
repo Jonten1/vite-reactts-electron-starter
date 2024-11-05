@@ -1554,7 +1554,7 @@ browserify-aes@^1.0.4, browserify-aes@^1.2.0:
     inherits "^2.0.1"
     safe-buffer "^5.0.1"
 
-browserify-cipher@^1.0.0:
+browserify-cipher@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/browserify-cipher/-/browserify-cipher-1.0.1.tgz"
   integrity sha512-sPhkz0ARKbf4rRQt2hTpAHqn47X3llLkUGn+xEJzLjwY8LRs2p0v7ljvI5EyoRO/mexrNunNECisZs+gw2zz1w==
@@ -1582,7 +1582,7 @@ browserify-rsa@^4.0.0, browserify-rsa@^4.1.0:
     randombytes "^2.1.0"
     safe-buffer "^5.2.1"
 
-browserify-sign@^4.0.0:
+browserify-sign@^4.2.3:
   version "4.2.3"
   resolved "https://registry.npmjs.org/browserify-sign/-/browserify-sign-4.2.3.tgz"
   integrity sha512-JWCZW6SKhfhjJxO8Tyiiy+XYB7cqd2S5/+WeYHsKdNKFlCBhKbblba1A/HN/90YwtxKc8tCErjffZl++UNmGiw==
@@ -2012,7 +2012,7 @@ crc32-stream@^4.0.2:
     crc-32 "^1.2.0"
     readable-stream "^3.4.0"
 
-create-ecdh@^4.0.0:
+create-ecdh@^4.0.4:
   version "4.0.4"
   resolved "https://registry.npmjs.org/create-ecdh/-/create-ecdh-4.0.4.tgz"
   integrity sha512-mf+TCx8wWc9VpuxfP2ht0iSISLZnt0JgWlrOKZiNqyUZWnjIaCIVNQArMHnCZKfEYRg6IM7A+NeJoN8gf/Ws0A==
@@ -2031,7 +2031,7 @@ create-hash@^1.1.0, create-hash@^1.1.2, create-hash@^1.2.0:
     ripemd160 "^2.0.1"
     sha.js "^2.4.0"
 
-create-hmac@^1.1.0, create-hmac@^1.1.4, create-hmac@^1.1.7:
+create-hmac@^1.1.4, create-hmac@^1.1.7:
   version "1.1.7"
   resolved "https://registry.npmjs.org/create-hmac/-/create-hmac-1.1.7.tgz"
   integrity sha512-MJG9liiZ+ogc4TzUwuvbER1JRdgvUFSB5+VR/g5h82fGaIRWMWddtKBHi7/sVhfjQZ6SehlyhvQYrcYkaUIpLg==
@@ -2052,22 +2052,23 @@ cross-spawn@^7.0.0, cross-spawn@^7.0.1, cross-spawn@^7.0.2, cross-spawn@^7.0.3:
     shebang-command "^2.0.0"
     which "^2.0.1"
 
-crypto-browserify@^3.12.0:
-  version "3.12.0"
-  resolved "https://registry.npmjs.org/crypto-browserify/-/crypto-browserify-3.12.0.tgz"
-  integrity sha512-fz4spIh+znjO2VjL+IdhEpRJ3YN6sMzITSBijk6FK2UvTqruSQW+/cCZTSNsMiZNvUeq0CqurF+dAbyiGOY6Wg==
+crypto-browserify@^3.12.0, crypto-browserify@^3.12.1:
+  version "3.12.1"
+  resolved "https://registry.npmjs.org/crypto-browserify/-/crypto-browserify-3.12.1.tgz"
+  integrity sha512-r4ESw/IlusD17lgQi1O20Fa3qNnsckR126TdUuBgAu7GBYSIPvdNyONd3Zrxh0xCwA4+6w/TDArBPsMvhur+KQ==
   dependencies:
-    browserify-cipher "^1.0.0"
-    browserify-sign "^4.0.0"
-    create-ecdh "^4.0.0"
-    create-hash "^1.1.0"
-    create-hmac "^1.1.0"
-    diffie-hellman "^5.0.0"
-    inherits "^2.0.1"
-    pbkdf2 "^3.0.3"
-    public-encrypt "^4.0.0"
-    randombytes "^2.0.0"
-    randomfill "^1.0.3"
+    browserify-cipher "^1.0.1"
+    browserify-sign "^4.2.3"
+    create-ecdh "^4.0.4"
+    create-hash "^1.2.0"
+    create-hmac "^1.1.7"
+    diffie-hellman "^5.0.3"
+    hash-base "~3.0.4"
+    inherits "^2.0.4"
+    pbkdf2 "^3.1.2"
+    public-encrypt "^4.0.3"
+    randombytes "^2.1.0"
+    randomfill "^1.0.4"
 
 css-select@^5.1.0:
   version "5.1.0"
@@ -2236,7 +2237,7 @@ didyoumean@^1.2.2:
   resolved "https://registry.npmjs.org/didyoumean/-/didyoumean-1.2.2.tgz"
   integrity sha512-gxtyfqMg7GKyhQmb056K7M3xszy/myH8w+B4RT+QXBQsvAOdc3XymqDDPHx1BgPgsdAA5SIifona89YtRATDzw==
 
-diffie-hellman@^5.0.0:
+diffie-hellman@^5.0.3:
   version "5.0.3"
   resolved "https://registry.npmjs.org/diffie-hellman/-/diffie-hellman-5.0.3.tgz"
   integrity sha512-kqag/Nl+f3GwyK25fhUMYj81BUOrZ9IuJsjIcDE5icNM9FJHAVm3VcUDxdLPoQtTuUylWm6ZIknYJwwaPxsUzg==
@@ -3389,7 +3390,7 @@ has@^1.0.3:
   dependencies:
     function-bind "^1.1.1"
 
-hash-base@^3.0.0, hash-base@~3.0:
+hash-base@^3.0.0, hash-base@~3.0, hash-base@~3.0.4:
   version "3.0.4"
   resolved "https://registry.npmjs.org/hash-base/-/hash-base-3.0.4.tgz"
   integrity sha512-EeeoJKjTyt868liAlVmcv2ZsUfGHlE3Q+BICOXcZiwN3osr5Q/zFGYmTJpoIzuaSTAwndFy+GqhEwlU4L3j4Ow==
@@ -4623,7 +4624,7 @@ path-type@^4.0.0:
   resolved "https://registry.npmjs.org/path-type/-/path-type-4.0.0.tgz"
   integrity sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==
 
-pbkdf2@^3.0.3, pbkdf2@^3.1.2:
+pbkdf2@^3.1.2:
   version "3.1.2"
   resolved "https://registry.npmjs.org/pbkdf2/-/pbkdf2-3.1.2.tgz"
   integrity sha512-iuh7L6jA7JEGu2WxDwtQP1ddOpaJNC4KlDEFfdQajSGgGPNi4OyDc2R7QnbY2bR9QjBVGwgvTdNJZoE7RaxUMA==
@@ -4798,7 +4799,7 @@ proxy-from-env@^1.1.0:
   resolved "https://registry.npmjs.org/proxy-from-env/-/proxy-from-env-1.1.0.tgz"
   integrity sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==
 
-public-encrypt@^4.0.0:
+public-encrypt@^4.0.3:
   version "4.0.3"
   resolved "https://registry.npmjs.org/public-encrypt/-/public-encrypt-4.0.3.tgz"
   integrity sha512-zVpa8oKZSz5bTMTFClc1fQOnyyEzpl5ozpi1B5YcvBrdohMjH2rfsBtyXcuNuwjsDIXmBYlF2N5FlJYhR29t8Q==
@@ -4857,7 +4858,7 @@ randombytes@^2.0.0, randombytes@^2.0.1, randombytes@^2.0.5, randombytes@^2.1.0:
   dependencies:
     safe-buffer "^5.1.0"
 
-randomfill@^1.0.3:
+randomfill@^1.0.4:
   version "1.0.4"
   resolved "https://registry.npmjs.org/randomfill/-/randomfill-1.0.4.tgz"
   integrity sha512-87lcbR8+MhcWcUiQ+9e+Rwx8MyR2P7qnt15ynUlbm3TU/fjbgz4GsvfSUDTemtCCtVCqb4ZcEFlyPNTh9bBTLw==
