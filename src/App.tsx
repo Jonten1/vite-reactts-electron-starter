@@ -24,12 +24,12 @@ function App() {
     localStorage.setItem('authToken', token);
     axios.defaults.headers.common.Authorization = `Bearer ${token}`;
     axios
-      .get('http://localhost:5000/auth/profile')
+      .get('http://localhost:8080/auth/profile')
       .then((response) => {
         setRole(response.data.user.role);
         setEmail(response.data.user.email);
         setCountry(response.data.user.country);
-        setCmNumber(response.data.user.numberMobile);
+        setCmNumber(response.data.user.numberWeb);
         setIsAuthenticated(true);
       })
       .catch(() => {
@@ -81,7 +81,7 @@ function App() {
         <div className="wrapper">
           <NavBar {...navBarProps} />
           {settingsToggle && <AccountSettings {...accountSettingsProps} />}
-          {role !== 'admin' && <Phone />}
+          {role !== 'admin' && <Phone cmNumber={cmNumber} />}
           {role === 'admin' && adminUsers && <AdminUsers />}
           {role === 'admin' && adminLogs && <AdminLogs />}
           {/* <CallLogsComponent /> */}

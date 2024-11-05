@@ -37,7 +37,7 @@ export default function CallLogsComponent() {
   const fetchCallLogs = async () => {
     setLoading(true); // Show loading indicator while fetching
     try {
-      const response = await fetch('http://localhost:8080/call-logs');
+      const response = await fetch('https://preferably-joint-airedale.ngrok-free.app:8080/call-logs');
       if (!response.ok) {
         throw new Error('Failed to fetch call logs');
       }
@@ -54,7 +54,7 @@ export default function CallLogsComponent() {
 
   const fetchNumbers = async () => {
     try {
-      const response = await fetch('http://localhost:8080/numbers');
+      const response = await fetch('https://preferably-joint-airedale.ngrok-free.app:8080/numbers');
 
       if (!response.ok) {
         throw new Error('Failed to fetch numbers');

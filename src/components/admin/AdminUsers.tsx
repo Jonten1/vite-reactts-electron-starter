@@ -32,7 +32,7 @@ export default function AdminUsers() {
   const [addNewCountry, setAddNewCountry] = useState(true);
   const [editingUser, setEditingUser] = useState(null);
   const [numbers, setNumbers] = useState([]);
-  const [numberMobile, setNumberMobile] = useState('');
+  const [numberWeb, setnumberWeb] = useState('');
   const [phoneCountry, setPhoneCountry] = useState('');
 
   const formatDate = (dateString) => {
@@ -53,7 +53,13 @@ export default function AdminUsers() {
   const token = localStorage.getItem('token');
   const fetchNumbers = async () => {
     try {
-      const response = await fetch('http://localhost:8080/numbers');
+      const response = await fetch('http://localhost:8080/numbers', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      });
 
       if (!response.ok) {
         throw new Error('Failed to fetch numbers');
@@ -77,7 +83,7 @@ export default function AdminUsers() {
         return;
       }
 
-      const response = await fetch('http://localhost:5000/auth/users', {
+      const response = await fetch('http://localhost:8080/auth/users', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -97,7 +103,7 @@ export default function AdminUsers() {
   };
 
   const fetchCountriesList = async () => {
-    const response = await fetch('http://localhost:5000/auth/country_list', {
+    const response = await fetch('http://localhost:8080/auth/country_list', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -114,7 +120,7 @@ export default function AdminUsers() {
     setCountries(countryList.getData().filter((country) => fetchedCountries.includes(country.code)));
   };
   useEffect(() => {
-    setNumberMobile('');
+    setnumberWeb('');
   }, [country]);
 
   useEffect(() => {
@@ -129,7 +135,7 @@ export default function AdminUsers() {
         return;
       }
 
-      const response = await fetch('http://localhost:5000/auth/countries', {
+      const response = await fetch('http://localhost:8080/auth/countries', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -157,12 +163,12 @@ export default function AdminUsers() {
       return;
     }
     try {
-      const response = await fetch('http://localhost:5000/auth/register', {
+      const response = await fetch('http://localhost:8080/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ email, password, country, numberMobile, registerRole })
+        body: JSON.stringify({ email, password, country, numberWeb, registerRole })
       });
 
       const data = await response.json();
@@ -189,7 +195,7 @@ export default function AdminUsers() {
 
   const handleUpdateUser = async (updatedUser) => {
     try {
-      const response = await fetch(`http://localhost:5000/auth/profile`, {
+      const response = await fetch(`http://localhost:8080/auth/profile`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -210,7 +216,7 @@ export default function AdminUsers() {
   };
   const handleDeleteUser = async (deletedUser) => {
     try {
-      const response = await fetch(`http://localhost:5000/auth/profile`, {
+      const response = await fetch(`http://localhost:8080/auth/profile`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -343,18 +349,18 @@ export default function AdminUsers() {
                           color="blue-gray"
                           className="flex h-10 items-center gap-2 border border-blue-gray-200 pl-3"
                         >
-                          {numberMobile || 'Select number'}
+                          {numberWeb || 'Select number'}
                         </Button>
                       </MenuHandler>
                       <MenuList className="max-h-[20rem] max-w-[18rem] overflow-auto">
                         {numbers
                           .filter(({ country }) => country === phoneCountry.toLowerCase())
-                          .filter(({ category }) => category === 'mobile')
+                          .filter(({ capabilities }) => capabilities[1] === 'webrtc')
                           .map(({ number }) => (
                             <MenuItem
                               key={number}
                               value={number}
-                              onClick={() => setNumberMobile(number)}
+                              onClick={() => setnumberWeb(number)}
                               className="flex items-center gap-2"
                             >
                               {number}
