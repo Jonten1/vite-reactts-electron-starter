@@ -9,25 +9,36 @@ export default function NavBar({
   setAdminUsers,
   adminUsers,
   setAdminLogs,
-  adminLogs
+  adminLogs,
+  setCountry,
+  setSettingsToggle
 }) {
   const handleLogout = () => {
     setIsAuthenticated(false);
     localStorage.removeItem('authToken'); // Remove token from local storage
+    localStorage.removeItem('token');
+    setCountry('');
   };
   const toggleAdminUsers = () => {
     setAdminUsers(true);
     setAdminLogs(false);
+    setSettingsToggle(false);
   };
   const toggleAdminLogs = () => {
     setAdminLogs(true);
+    setAdminUsers(false);
+    setSettingsToggle(false);
+  };
+  const toggleSettingsHandler = () => {
+    setSettingsToggle(true);
+    setAdminLogs(false);
     setAdminUsers(false);
   };
   return (
     <Navbar className="mx-auto max-w-screen-xl px-6 py-3">
       <div className="flex items-center justify-between text-blue-gray-900">
         <Typography variant="h6" className="mr-4 py-1.5">
-          SkyPhone {role === 'user' ? '' : 'ADMIN VIEW'}
+          SkyPhone {role === 'cm' ? '' : 'ADMIN VIEW'}
         </Typography>
         <div className="lg:block">
           <ul className="my-2 flex flex-col gap-2 lg:mb-0 lg:mt-0 sm:flex-row lg:items-center lg:gap-6">
@@ -53,6 +64,7 @@ export default function NavBar({
               </MenuHandler>
               <MenuList>
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                <MenuItem onClick={toggleSettingsHandler}>Settings</MenuItem>
               </MenuList>
             </Menu>
             <Typography as="li" variant="small" color="blue-gray" className="p-1 font-medium">

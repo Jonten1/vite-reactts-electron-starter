@@ -5,36 +5,24 @@ import '../style/phone.css';
 import axios from 'axios';
 import ringtoneFile from '../assets/ringtone-126505.mp3';
 
-function Phone() {
+function Phone(cmNumber) {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [timeout, setTimeout] = useState(0);
   const [session, setSession] = useState(null);
   const [incomingCall, setIncomingCall] = useState(false);
-  const [incomingCallData, setIncomingCallData] = useState(null);
+  const [incomingCallNumber, setIncomingCallNumber] = useState('');
   const [callActive, setCallActive] = useState(false);
   const [userAgent, setUserAgent] = useState(null);
   const [callStartTime, setCallStartTime] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [currentNumber, setCurrentNumber] = useState('');
-  const [direction, setDirection] = useState('');
+  const [direction, setDirection] = useState('incoming');
+  const [webrtcUser, setWebrtcUser] = useState(null);
+  const [webrtcPassword, setWebrtcPassword] = useState(null);
   const ringtoneRef = useRef(null);
   const remoteAudioRef = useRef(null);
-  const webrtcUser = '4600120052';
-  const webrtcPassword = '52AAAA26D4459170E37DA65EA0E9D779';
-  const webrtcDomain = 'voip.46elks.com';
 
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      try {
-        const response = await fetch('http://localhost:8080/incoming-call');
-        const data = await response.json();
-        setIncomingCallData(data);
-      } catch (error) {
-        console.error('Error fetching incoming call data:', error);
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [incomingCall, callActive, session]);
+  const webrtcDomain = 'voip.46elks.com';
 
   useEffect(() => {
     let timer;
@@ -49,7 +37,54 @@ function Phone() {
       clearInterval(timer);
     };
   }, [callStartTime]);
+  useEffect(() => {
+    let timer;
+    if (callStartTime) {
+      timer = setInterval(() => {
+        setElapsedTime(Math.floor((Date.now() - callStartTime) / 1000));
+      }, 1000);
+    } else {
+      setElapsedTime(0);
+    }
+    return () => {
+      clearInterval(timer);
+    };
+  }, [callStartTime]);
 
+  // Separate effect for fetching numbers
+  useEffect(() => {
+    const fetchNumbers = async () => {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await fetch('http://localhost:8080/numbers', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch numbers');
+        }
+
+        const data = await response.json();
+        const webNumber = data.data.find((number) => number.number === cmNumber.cmNumber);
+
+        if (webNumber) {
+          const cleanNumber = webNumber.number.replace('+', '');
+          setWebrtcUser(cleanNumber);
+          setWebrtcPassword(webNumber.secret);
+        }
+      } catch (err) {
+        console.error('Error fetching numbers:', err);
+      }
+    };
+
+    if (cmNumber?.cmNumber) {
+      fetchNumbers();
+    }
+  }, [cmNumber?.cmNumber]);
   useEffect(() => {
     const initializeUserAgent = async () => {
       const uri = new URI('sip', webrtcUser, webrtcDomain);
@@ -77,11 +112,16 @@ function Phone() {
 
       ua.delegate = {
         onInvite: (invitation) => {
-          console.log('Incoming call');
+          console.log('Establishing call');
           setIncomingCall(true);
           setSession(invitation);
           if (ringtoneRef.current) {
             ringtoneRef.current.play();
+          }
+          if (direction === 'incoming') {
+            const from = invitation.request.headers.From[0].parsed.uri.user;
+            console.log('Incoming call data', from);
+            setIncomingCallNumber(from);
           }
 
           invitation.stateChange.addListener((newState) => {
@@ -112,7 +152,7 @@ function Phone() {
         userAgent.stop();
       }
     };
-  }, []);
+  }, [webrtcUser, webrtcPassword]);
 
   const setupRemoteAudio = (session) => {
     const remoteStream = new MediaStream();
@@ -136,10 +176,10 @@ function Phone() {
         timeout
       });
       console.log('Response data:', response.data);
-      setDirection(response.data.direction);
+      setDirection('outgoing');
       setCallActive(true);
 
-      if (response.data.direction === 'outgoing') {
+      if (response.data.direction === 'outgoing' && session) {
         const invitation = await session.answer();
         console.log('Call answered');
         setupRemoteAudio(invitation);
@@ -154,7 +194,6 @@ function Phone() {
       }
     }
   };
-
   const endCall = async () => {
     if (!session) return;
 
@@ -177,6 +216,7 @@ function Phone() {
       setSession(null);
       setCurrentNumber('');
       setPhoneNumber('');
+      setIncomingCallNumber('');
       console.log('Call ended');
     } catch (error) {
       console.error('Error ending call:', error);
@@ -184,7 +224,10 @@ function Phone() {
   };
 
   const answerCall = async () => {
-    setCurrentNumber(incomingCallData.from);
+    if (direction === 'incoming') {
+      setCurrentNumber(incomingCallNumber);
+    }
+
     if (session) {
       if (ringtoneRef.current) {
         ringtoneRef.current.pause();
@@ -237,10 +280,10 @@ function Phone() {
       {(incomingCall || direction === 'outgoing') && (
         <h3 className="text-xl">{direction === 'outgoing' ? 'Outgoing call to:' : 'Incoming call from:'}</h3>
       )}
-      {incomingCall && direction !== 'outgoing' && <p className="text-xl">{incomingCallData?.from}</p>}
+      {incomingCall && direction !== 'outgoing' && <p className="text-xl">{incomingCallNumber}</p>}
       {callActive && (
         <>
-          <h3 className="text-xl">{currentNumber}</h3>
+          <h3 className="text-xl">{currentNumber || incomingCallNumber}</h3>
           <p className="text-xl">{formatTime(elapsedTime)}</p>
         </>
       )}
